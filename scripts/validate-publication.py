@@ -27,19 +27,13 @@ ARCHIVES = (
     "artifacts/hermes-control-plane-site-v4.tar.gz",
 )
 SECRET_PATTERNS = (
-    ("GitHub classic token", re.compile(r"ghp_[A-Za-z0-9]{20,}")),
-    ("GitHub fine-grained token", re.compile(r"github_pat_[A-Za-z0-9_]{20,}")),
-    ("OpenAI-style secret key", re.compile(r"\bsk-[A-Za-z0-9_-]{20,}")),
-    ("AWS access key", re.compile(r"\bAKIA[0-9A-Z]{16}\b")),
-    ("Slack token", re.compile(r"\bxox[baprs]-[A-Za-z0-9-]{20,}")),
-    (
-        "literal bearer token",
-        re.compile(r"\bBearer\s+[A-Za-z0-9][A-Za-z0-9._~-]{23,}"),
-    ),
-    (
-        "private key",
-        re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
-    ),
+    re.compile(r"ghp_[A-Za-z0-9]{20,}"),
+    re.compile(r"github_pat_[A-Za-z0-9_]{20,}"),
+    re.compile(r"\bsk-[A-Za-z0-9_-]{20,}"),
+    re.compile(r"\bAKIA[0-9A-Z]{16}\b"),
+    re.compile(r"\bxox[baprs]-[A-Za-z0-9-]{20,}"),
+    re.compile(r"\bBearer\s+[A-Za-z0-9][A-Za-z0-9._~-]{23,}"),
+    re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
 )
 MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 
@@ -70,17 +64,15 @@ def decode_text(data: bytes) -> str | None:
         return None
 
 
-def scan_secrets(label: str, data: bytes, failures: list[str]) -> None:
+def contains_candidate_secret(data: bytes) -> bool:
     text = decode_text(data)
     if text is None:
-        return
-    for secret_name, pattern in SECRET_PATTERNS:
-        match = pattern.search(text)
-        if match:
-            failures.append(f"{label}: possible {secret_name}")
+        return False
+    return any(pattern.search(text) is not None for pattern in SECRET_PATTERNS)
 
 
-def scan_archives(root: Path, failures: list[str]) -> None:
+def scan_archives(root: Path, failures: list[str]) -> bool:
+    candidate_secret_found = False
     for relative in ARCHIVES:
         archive_path = root / relative
         if not archive_path.is_file():
@@ -92,10 +84,9 @@ def scan_archives(root: Path, failures: list[str]) -> None:
                 for member in archive.infolist():
                     if member.is_dir() or member.file_size > MAX_TEXT_BYTES:
                         continue
-                    scan_secrets(
-                        f"{relative}!{member.filename}",
-                        archive.read(member),
-                        failures,
+                    candidate_secret_found = (
+                        contains_candidate_secret(archive.read(member))
+                        or candidate_secret_found
                     )
             continue
 
@@ -106,13 +97,13 @@ def scan_archives(root: Path, failures: list[str]) -> None:
                         continue
                     extracted = archive.extractfile(member)
                     if extracted is not None:
-                        scan_secrets(
-                            f"{relative}!{member.name}",
-                            extracted.read(),
-                            failures,
+                        candidate_secret_found = (
+                            contains_candidate_secret(extracted.read())
+                            or candidate_secret_found
                         )
         except tarfile.TarError as error:
             failures.append(f"{relative}: invalid archive: {error}")
+    return candidate_secret_found
 
 
 def validate_markdown_links(root: Path, files: list[Path], failures: list[str]) -> None:
@@ -169,16 +160,27 @@ def main() -> int:
         ):
             failures.append(f"{relative}: forbidden publication path is tracked")
 
+    candidate_secret_found = False
     for path in files:
-        scan_secrets(str(path.relative_to(root)), path.read_bytes(), failures)
+        candidate_secret_found = (
+            contains_candidate_secret(path.read_bytes()) or candidate_secret_found
+        )
 
-    scan_archives(root, failures)
+    candidate_secret_found = (
+        scan_archives(root, failures) or candidate_secret_found
+    )
     validate_markdown_links(root, files, failures)
 
+    if candidate_secret_found:
+        print(
+            "Publication validation failed: candidate secret detected.",
+            file=sys.stderr,
+        )
     if failures:
         print("Publication validation failed:", file=sys.stderr)
         for failure in failures:
             print(f"- {failure}", file=sys.stderr)
+    if candidate_secret_found or failures:
         return 1
 
     print(
