@@ -77,8 +77,7 @@ def scan_secrets(label: str, data: bytes, failures: list[str]) -> None:
     for secret_name, pattern in SECRET_PATTERNS:
         match = pattern.search(text)
         if match:
-            line = text.count("\n", 0, match.start()) + 1
-            failures.append(f"{label}:{line}: possible {secret_name}")
+            failures.append(f"{label}: possible {secret_name}")
 
 
 def scan_archives(root: Path, failures: list[str]) -> None:
@@ -157,15 +156,18 @@ def main() -> int:
     )
     failures: list[str] = []
 
-    for relative in FORBIDDEN_PATHS:
-        if (root / relative).exists():
-            failures.append(f"{relative}: forbidden publication path is present")
-
     try:
         files = tracked_files(root)
     except (OSError, subprocess.CalledProcessError) as error:
         print(f"Unable to enumerate tracked files: {error}", file=sys.stderr)
         return 1
+
+    tracked_relative = {path.relative_to(root).as_posix() for path in files}
+    for relative in FORBIDDEN_PATHS:
+        if relative in tracked_relative or any(
+            path.startswith(f"{relative}/") for path in tracked_relative
+        ):
+            failures.append(f"{relative}: forbidden publication path is tracked")
 
     for path in files:
         scan_secrets(str(path.relative_to(root)), path.read_bytes(), failures)
