@@ -1,0 +1,38 @@
+# Credentials and local operator state
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+logs/
+
+# Nested repository metadata and dependency caches
+**/.git/
+**/node_modules/
+**/.venv/
+**/__pycache__/
+*.py[cod]
+
+# Build and runtime output
+**/dist/
+**/.next/
+**/.wrangler/
+coverage/
+*.log
+
+# Local platform files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Temporary packages
+*.tmp
+*.swp
+*.bak
+
+# Superseded pre-connection release artifacts
+artifacts/hermes-control-plane-site.tar.gz
+artifacts/hermes-hibernation-plugin-preconnection.zip

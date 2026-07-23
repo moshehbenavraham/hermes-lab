@@ -1,0 +1,49 @@
+name: Bug report
+description: Report a reproducible Hermes Lab defect.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include credentials, auth contents, private logs, or account identifiers.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Provide minimal, secret-free steps.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Control plane / OpenAI Site
+        - MCP gateway
+        - Secure MCP Tunnel
+        - ChatGPT app or plugin
+        - Work executor skill
+        - Hermes inference
+        - Documentation or packaging
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation output
+      description: Include only redacted, secret-free output.

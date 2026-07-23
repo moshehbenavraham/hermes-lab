@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: control-plane/package-lock.json
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate public repository contents
+        run: python scripts/validate-publication.py
+
+      - name: Install control-plane dependencies
+        working-directory: control-plane
+        run: npm ci
+
+      - name: Audit dependencies
+        working-directory: control-plane
+        run: npm audit --audit-level=high
+
+      - name: Lint and test control plane
+        working-directory: control-plane
+        run: |
+          npm run lint
+          npm test
+
+      - name: Validate scripts and packages
+        run: |
+          node --check ops/tunnel-client/hermes-mcp-gateway.cjs
+          bash -n scripts/*.sh
+          python -m py_compile plugin/skills/run-hermes-hibernation/scripts/*.py
+          unzip -t artifacts/hermes-hibernation-plugin-v0.3.0.zip
+          unzip -t artifacts/run-hermes-hibernation-skill-v0.3.0.zip
+          tar -tzf artifacts/hermes-control-plane-site-v4.tar.gz >/dev/null
+          git submodule status --recursive

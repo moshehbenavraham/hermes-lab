@@ -1,0 +1,46 @@
+<evaluation>
+  <qa_pair>
+    <question>Which Hermes tool inspects recent durable jobs without changing state?</question>
+    <answer>hermes_get_queue</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Which Hermes tool should be called once at the start of a scheduled Work execution?</question>
+    <answer>hermes_claim_research_run</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>What must the executor do when hermes_claim_research_run returns a null job?</question>
+    <answer>Stop without running Hermes.</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Which tool creates a new durable research objective?</question>
+    <answer>hermes_enqueue_research</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Which tool persists the outcome of a claimed run as compact memory?</question>
+    <answer>hermes_commit_research_run</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>What are the two accepted final states for a committed run?</question>
+    <answer>completed and failed</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Is hermes_commit_research_run annotated as idempotent?</question>
+    <answer>Yes.</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Do any of the four Hermes MCP tools interact with the open world directly?</question>
+    <answer>No.</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>What durable store holds the job queue and compact result memory?</question>
+    <answer>D1</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Does this control plane promise a continuously running Hermes process?</question>
+    <answer>No. It implements hibernation across ephemeral Work runs.</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>What happens when a Work run claims a job and terminates before committing it?</question>
+    <answer>The two-hour claim lease eventually expires, and a later claim call automatically returns the job to the queue.</answer>
+  </qa_pair>
+</evaluation>

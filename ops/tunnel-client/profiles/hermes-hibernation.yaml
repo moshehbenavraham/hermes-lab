@@ -1,0 +1,16 @@
+config_version: 1
+control_plane:
+  base_url: "https://api.openai.com"
+  tunnel_id: "tunnel_6a624a7b78d88191a90c78a1f7eaa80b"
+  api_key: "file:/home/aiwithapex/.config/hermes-tunnel/control-plane-api-key"
+health:
+  listen_addr: "127.0.0.1:18080"
+admin_ui:
+  open_browser: false
+log:
+  level: info
+  format: json
+mcp:
+  server_urls:
+    - channel: main
+      url: "http://127.0.0.1:18081/mcp"

@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use Hermes Lab, please cite this repository."
+title: "Hermes Lab"
+abstract: >-
+  An owner-only, OpenAI-first hibernating Nous Hermes research agent with
+  durable Sites state, Secure MCP Tunnel transport, disposable ChatGPT Work
+  compute, native web research, and tool-less Codex OAuth inference.
+type: software
+authors:
+  - given-names: Max
+    family-names: Gibson
+    alias: moshehbenavraham
+repository-code: "https://github.com/moshehbenavraham/hermes-lab"
+url: "https://hermes-hibernation-lab.maxgibson.chatgpt.site"
+license: MIT
+version: 0.3.0
+date-released: 2026-07-23
+keywords:
+  - OpenAI
+  - ChatGPT
+  - Codex
+  - Model Context Protocol
+  - Nous Hermes
+  - research agents

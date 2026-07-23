@@ -1,0 +1,26 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+  categories:
+    - title: Security
+      labels:
+        - security
+    - title: Control plane
+      labels:
+        - control-plane
+    - title: MCP and transport
+      labels:
+        - mcp
+    - title: Work executor
+      labels:
+        - work-executor
+    - title: Documentation
+      labels:
+        - documentation
+    - title: Dependencies
+      labels:
+        - dependencies
+    - title: Other changes
+      labels:
+        - "*"

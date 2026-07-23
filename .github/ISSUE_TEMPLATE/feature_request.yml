@@ -1,0 +1,33 @@
+name: Feature request
+description: Propose an improvement that preserves project invariants.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What limitation or operator need should be addressed?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Describe the smallest viable solution.
+    validations:
+      required: true
+  - type: checkboxes
+    id: invariants
+    attributes:
+      label: Project invariants
+      options:
+        - label: The Site remains owner-only.
+          required: true
+        - label: Hermes remains tool-less.
+          required: true
+        - label: No third-party model, search, database, gateway, or hosting fallback is introduced.
+          required: true
+        - label: No credential content is persisted or logged.
+          required: true

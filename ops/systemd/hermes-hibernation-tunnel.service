@@ -1,0 +1,21 @@
+[Unit]
+Description=Hermes Hibernation OpenAI Secure MCP Tunnel
+Documentation=https://developers.openai.com/api/docs/guides/secure-mcp-tunnels
+After=network-online.target hermes-hibernation-mcp-gateway.service
+Wants=network-online.target
+Requires=hermes-hibernation-mcp-gateway.service
+
+[Service]
+Type=simple
+ExecStart=/home/aiwithapex/.local/bin/tunnel-client run --profile-file /home/aiwithapex/projects/hermes-lab/ops/tunnel-client/profiles/hermes-hibernation.yaml
+Restart=always
+RestartSec=5
+TimeoutStopSec=15
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+UMask=0077
+
+[Install]
+WantedBy=default.target

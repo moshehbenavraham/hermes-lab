@@ -1,0 +1,4 @@
+interface:
+  display_name: "Run Hermes Hibernation"
+  short_description: "Run bounded Hermes research wakeups"
+  default_prompt: "Use $run-hermes-hibernation to claim and complete one queued Hermes research job."

@@ -1,0 +1,27 @@
+{
+  "name": "hermes-hibernation",
+  "version": "0.3.0",
+  "description": "Run a durable queue of bounded Nous Hermes research wakeups in ChatGPT Work.",
+  "author": {
+    "name": "Local developer"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Hermes Hibernation",
+    "shortDescription": "Run persistent Hermes research wakeups.",
+    "longDescription": "Queue research in an owner-only OpenAI Site, gather evidence with native ChatGPT Work research, wake a tool-less pinned Nous Hermes synthesizer, and persist concise results between disposable executions.",
+    "developerName": "Local developer",
+    "category": "Productivity",
+    "capabilities": [
+      "Research",
+      "Scheduled execution",
+      "Durable queue"
+    ],
+    "defaultPrompt": [
+      "Run one queued Hermes research job.",
+      "Show the durable Hermes research queue.",
+      "Queue a new Hermes research objective."
+    ]
+  },
+  "apps": "./.app.json"
+}
