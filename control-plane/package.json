@@ -16,7 +16,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.29.0",
     "drizzle-orm": "0.45.2",
-    "next": "16.2.11",
+    "next": "16.4.0",
     "react": "19.2.6",
     "react-dom": "19.2.6",
     "zod": "4.4.3"
