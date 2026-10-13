@@ -12,8 +12,15 @@ try {
   out = execFileSync("npm", ["audit", "--json"], { encoding: "utf8", maxBuffer: 64 << 20 });
 } catch (e) {
   out = e.stdout; // npm audit exits non-zero when vulnerabilities exist
+  if (!out) { console.error("npm audit failed without JSON output:", e.message); process.exit(1); }
 }
-const report = JSON.parse(out);
+let report;
+try {
+  report = JSON.parse(out);
+} catch (e) {
+  console.error("npm audit returned non-JSON output:", e.message);
+  process.exit(1);
+}
 if (report.error) { console.error("npm audit error:", report.error); process.exit(1); }
 const blocking = new Map();
 const allowedHits = new Set();
