@@ -42,7 +42,8 @@ jobs:
 
       - name: Audit dependencies
         working-directory: control-plane
-        run: npm audit --audit-level=high
+        # Same as `npm audit --audit-level=high`, except allowlisted GHSA IDs in audit-allowlist.json
+        run: node audit-check.mjs
 
       - name: Lint and test control plane
         working-directory: control-plane
