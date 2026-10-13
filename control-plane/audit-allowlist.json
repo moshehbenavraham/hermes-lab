@@ -1,0 +1,13 @@
+{
+  "_comment": "Narrow npm audit exceptions. Each entry must name a single GHSA ID, a reason, the date added, and a removal condition. Everything else at high/critical still fails CI.",
+  "advisories": [
+    {
+      "id": "GHSA-vfj7-8cjw-p6xm",
+      "package": "braces",
+      "reason": "braces <=3.0.3 stack-exhaustion DoS; no patched version exists upstream. Reached only via build/lint tooling (eslint-config-next -> @next/eslint-plugin-next -> fast-glob -> micromatch, and vinext -> vite-plugin-commonjs -> fast-glob), not runtime request handling.",
+      "added": "2026-10-13",
+      "approved_by": "Max",
+      "remove_when": "Remove when braces ships a patched release (first_patched_version is set) and the lockfile is updated."
+    }
+  ]
+}
